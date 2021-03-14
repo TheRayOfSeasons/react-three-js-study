@@ -1,6 +1,8 @@
-import { Scene } from 'three';
-import { MyBox } from '../GameObjects/MyBox.js';
+import { EngineScene } from '../Core/SceneManagement';
+import { BoxObject } from '../GameObjects/BoxObject';
 
-export const MainScene = new Scene();
-
-MainScene.add(MyBox.meshModel.mesh);
+export class MainScene extends EngineScene {
+  gameObjects = {
+    BoxObject
+  }
+}
