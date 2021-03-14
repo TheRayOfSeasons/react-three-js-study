@@ -4,6 +4,8 @@ import { BoxMeshComponent } from '../Models/BoxMeshComponent';
 class BoxLogic extends MonoBehaviour {
   start() {
     this.mesh = this.getComponent('BoxMeshComponent').mesh;
+    this.mesh.position.x = -2;
+    this.mesh.position.z = -2;
   }
 
   update(time) {
