@@ -1,7 +1,9 @@
-import { Vector2, Vector3, Plane, Raycaster } from 'three';
+import { Vector2, Vector3, Plane, Raycaster, Clock } from 'three';
 import { MonoBehaviour, GameObject } from '../Core/Behaviour';
 import { BoxMeshComponent } from '../Models/BoxMeshComponent';
 import { MainCamera } from '../Cameras/MainCamera';
+
+const clock = new Clock();
 
 class ControllableBoxLogic extends MonoBehaviour {
   start() {
@@ -21,6 +23,13 @@ class ControllableBoxLogic extends MonoBehaviour {
       raycaster.ray.intersectPlane(plane, intersectPoint);
       this.mesh.lookAt(intersectPoint);
     }, false);
+  }
+
+  update(time) {
+    const elapsedTime = clock.getElapsedTime();
+    this.mesh.position.x = Math.sin(elapsedTime) * 2 + 5;
+    this.mesh.position.y = Math.cos(elapsedTime) * 2;
+    this.mesh.position.z = Math.cos(elapsedTime) * 2;
   }
 }
 

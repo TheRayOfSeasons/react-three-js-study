@@ -5,7 +5,7 @@ import { Game } from './components/Game';
 function App() {
   return (
     <div className="App">
-      <h2>Game</h2>
+      <h2>Three.js study</h2>
       <Game></Game>
     </div>
   );

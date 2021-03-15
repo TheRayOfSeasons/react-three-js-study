@@ -1,5 +1,8 @@
+import { Clock } from 'three';
 import { MonoBehaviour, GameObject } from '../Core/Behaviour';
 import { BoxMeshComponent } from '../Models/BoxMeshComponent';
+
+const clock = new Clock();
 
 class BoxLogic extends MonoBehaviour {
   start() {
@@ -9,8 +12,13 @@ class BoxLogic extends MonoBehaviour {
   }
 
   update(time) {
-    this.mesh.rotation.x = time / 2000;
-    this.mesh.rotation.y = time / 1000;
+    const elapsedTime = clock.getElapsedTime();
+    this.mesh.rotation.x = elapsedTime * Math.PI * 0.5;
+    this.mesh.rotation.y = elapsedTime * Math.PI * 0.5;
+    this.mesh.position.x = Math.sin(elapsedTime) * 2;
+    this.mesh.position.y = Math.cos(elapsedTime) * 2;
+    this.mesh.position.z = Math.cos(elapsedTime) * 7;
+    this.mesh.scale.x = Math.sin(elapsedTime) + 1;
   }
 }
 
