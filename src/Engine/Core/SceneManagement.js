@@ -17,10 +17,8 @@ export class EngineScene extends Behaviour {
       const instance = new gameObject({ parentBehaviour: this });
       this.instances[key] = instance;
       instance.start();
-      const sceneObjects = instance.exportSceneObjects();
-      for(const sceneObject of sceneObjects) {
-        this.scene.add(sceneObject);
-      }
+      const group = instance.exportObjectGroup();
+      this.scene.add(group);
     });
   }
 

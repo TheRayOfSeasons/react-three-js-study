@@ -1,7 +1,10 @@
+import { Group } from 'three';
+
 export class Behaviour {
   start() {}
   update() {}
   exportAsSceneObject() {}
+  exportObjectGroup() {}
 }
 
 export class Component extends Behaviour {}
@@ -10,11 +13,25 @@ export class GameObject extends Behaviour {
   monobehaviours = {}
   components = {}
 
+  constructor() {
+    super();
+    this.group = new Group();
+  }
+
+  addComponent({ key, monobehaviour }) {
+    const component = new monobehaviour({ parentBehaviour: this });
+    this.components[key] = component;
+    component.start();
+    const exportedSceneObject = component.exportAsSceneObject();
+    if(exportedSceneObject) {
+      this.group.add(exportedSceneObject);
+    }
+  }
+
   start() {
+    this.group = new Group();
     Object.entries(this.monobehaviours).forEach(([key, monobehaviour]) => {
-      const component = new monobehaviour({ parentBehaviour: this });
-      this.components[key] = component;
-      component.start();
+      this.addComponent({ key, monobehaviour });
     });
   }
 
@@ -22,10 +39,8 @@ export class GameObject extends Behaviour {
     Object.values(this.components).forEach(component => component.update(time));
   }
 
-  exportSceneObjects() {
-    return Object.values(this.components)
-      .map(component => component.exportAsSceneObject())
-      .filter(sceneObject => sceneObject);
+  exportObjectGroup() {
+    return this.group;
   }
 }
 
