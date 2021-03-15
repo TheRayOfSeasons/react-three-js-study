@@ -13,6 +13,6 @@ export class MainScene extends EngineScene {
     AxesObject,
     CameraHandler,
     StaticBox,
-    // CustomObject
+    CustomObject
   }
 }

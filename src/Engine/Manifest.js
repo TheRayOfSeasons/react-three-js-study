@@ -3,8 +3,11 @@ import { Size } from './Constants.js';
 import { MainCamera } from './Cameras/MainCamera';
 import { MainScene } from './Scenes/MainScene';
 
+export let currentCanvas;
+
 export const manifest = {
   init: canvas => {
+    currentCanvas = canvas;
     const renderer = new WebGLRenderer({
       antialias: true,
       canvas
