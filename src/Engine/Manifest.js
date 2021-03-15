@@ -15,12 +15,10 @@ export const manifest = {
     renderer.setSize(Size.GameScreen.width, Size.GameScreen.height);
     const scene = new MainScene();
     scene.start();
-    renderer.render(scene.scene, MainCamera);
     const animate = (time) => {
       scene.update(time);
       renderer.render(scene.scene, MainCamera);
     }
     renderer.setAnimationLoop(animate);
-    renderer.render(scene.scene, MainCamera);
   }
 }
