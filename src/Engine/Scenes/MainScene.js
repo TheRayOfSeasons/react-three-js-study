@@ -5,6 +5,7 @@ import { AxesObject } from '../GameObjects/AxesHelper';
 import { CustomObject } from '../GameObjects/CustomObject';
 import { CameraHandler } from '../GameObjects/CameraHandler';
 import { StaticBox } from '../GameObjects/StaticBox';
+import { ParticleA } from '../GameObjects/ParticleA';
 
 export class MainScene extends EngineScene {
   gameObjects = {
@@ -13,6 +14,7 @@ export class MainScene extends EngineScene {
     AxesObject,
     CameraHandler,
     StaticBox,
-    CustomObject
+    CustomObject,
+    ParticleA
   }
 }
