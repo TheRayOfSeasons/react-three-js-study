@@ -4,6 +4,7 @@ import { MainCamera } from './Cameras/MainCamera';
 import { MainScene } from './Scenes/MainScene';
 
 export let currentCanvas;
+export let currentScene = new MainScene;
 
 export const manifest = {
   init: canvas => {
@@ -13,7 +14,7 @@ export const manifest = {
       canvas
     });
     renderer.setSize(Size.GameScreen.width, Size.GameScreen.height);
-    const scene = new MainScene();
+    const scene = currentScene;
     scene.start();
     const animate = (time) => {
       scene.update(time);

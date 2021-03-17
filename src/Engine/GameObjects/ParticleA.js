@@ -1,10 +1,10 @@
-import peepoHappy from '../Textures/peepoHappy.png';
+import peepoHappy from '../Textures/stars-png-634.png';
 import { AdditiveBlending, BufferAttribute, BufferGeometry, Float32BufferAttribute, Group, InstancedBufferGeometry, MeshBasicMaterial, Points, PointsMaterial, TextureLoader, Vector3 } from 'three';
 import { GameObject, MonoBehaviour } from '../Core/Behaviour';
 
 class ParticleALogic extends MonoBehaviour {
   start() {
-    const particleCount = 1800;
+    const particleCount = 10000;
     const geometry = new BufferGeometry();
     const textureLoader = new TextureLoader();
     const vertices = [];

@@ -22,14 +22,15 @@ class ControllableBoxLogic extends MonoBehaviour {
       raycaster.setFromCamera(mousePosition, MainCamera);
       raycaster.ray.intersectPlane(plane, intersectPoint);
       this.mesh.lookAt(intersectPoint);
+      console.log('mouse control box');
     }, false);
   }
 
   update(time) {
     const elapsedTime = clock.getElapsedTime();
-    this.mesh.position.x = Math.sin(elapsedTime) * 2 + 5;
-    this.mesh.position.y = Math.cos(elapsedTime) * 2;
-    this.mesh.position.z = Math.cos(elapsedTime) * 2;
+    // this.mesh.position.x = Math.sin(elapsedTime) * 2 + 5;
+    // this.mesh.position.y = Math.cos(elapsedTime) * 2;
+    // this.mesh.position.z = Math.cos(elapsedTime) * 2;
   }
 }
 

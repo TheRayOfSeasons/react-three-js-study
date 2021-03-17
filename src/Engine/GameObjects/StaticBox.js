@@ -20,15 +20,15 @@ class BoxLogic extends MonoBehaviour {
   }
   
   update(time) {
-    if(currentScene) {
-      const intersects = this.raycaster.intersectObjects([this.mesh], true);
-      if(intersects.length > 0) {
-        const elapsedTime = clock.getElapsedTime();
-        for(const intersect of intersects) {
-          intersect.object.position.x = Math.sin(elapsedTime) * 2;
-        }
-      }
-    }
+    // if(currentScene) {
+    //   const intersects = this.raycaster.intersectObjects([this.mesh], true);
+    //   if(intersects.length > 0) {
+    //     const elapsedTime = clock.getElapsedTime();
+    //     for(const intersect of intersects) {
+    //       intersect.object.position.x = Math.sin(elapsedTime) * 2;
+    //     }
+    //   }
+    // }
   }
 }
 

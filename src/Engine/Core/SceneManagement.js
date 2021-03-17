@@ -10,7 +10,10 @@ export class EngineScene extends Behaviour {
   constructor() {
     super();
     this.scene = new Scene(...this.sceneProps);
+    this.modifyScene(this.scene);
   }
+
+  modifyScene(scene) {}
 
   start() {
     Object.entries(this.gameObjects).forEach(([key, gameObject]) => {
