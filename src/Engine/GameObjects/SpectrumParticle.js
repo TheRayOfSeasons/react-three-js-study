@@ -93,7 +93,9 @@ class GalaxyParticle extends MonoBehaviour {
     radius: 5,
     branches: 3,
     spin: 1,
-    speed: 2,
+    speed: 0.2,
+    breathingIntensity: 0.02,
+    breathingDistance: 5,
     randomness: 0.2,
     spread: 5,
     innerColor: 0xff3c30,
@@ -120,6 +122,7 @@ class GalaxyParticle extends MonoBehaviour {
         const radius = Math.random() * this.parameters.radius;
         const spinAngle = radius * this.parameters.spin;
         const branchAngle = (i % this.parameters.branches) / this.parameters.branches * Math.PI * 2;
+        const upwardsAngle = (i % 10) / 10 * Math.PI * 2;
 
         // const randomX = (Math.random() - 0.5) * this.parameters.randomness;
         // const randomY = (Math.random() - 0.5) * this.parameters.randomness;
@@ -130,7 +133,7 @@ class GalaxyParticle extends MonoBehaviour {
         const randomZ = Math.pow(Math.random(), this.parameters.spread) * (Math.random() < 0.5 ? 1 : -1);
 
         positions[x] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-        positions[y] = randomY;
+        positions[y] = Math.tan(upwardsAngle + spinAngle) * radius + randomY;
         positions[z] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
         // Colors
@@ -153,13 +156,29 @@ class GalaxyParticle extends MonoBehaviour {
       this.geometry = geometry;
       this.points = points;
       this.group.add(points);
+      this.points.rotation.x = 1;
+      this.points.rotation.z = 2.7;
     }
     generateGalaxy();
   }
 
   update(time) {
     const elapsedTime = clock.getElapsedTime();
-    // this.points.rotation.y = elapsedTime * this.parameters.speed;
+    this.points.rotation.y = elapsedTime * this.parameters.speed;
+    this.points.scale.y = Math.sin(elapsedTime + this.parameters.breathingDistance) * this.parameters.breathingIntensity;
+    // for(let i = 0; i < this.parameters.count; i++) {
+    //   const i3 = i * 3;
+    //   const x = i3;
+    //   const y = i3 + 1;
+    //   const z = i3 + 2;
+      // const radius = Math.random() * this.parameters.radius;
+      // const spinAngle = radius * this.parameters.spin;
+      // const branchAngle = (i % this.parameters.branches) / this.parameters.branches * Math.PI * 2;
+
+      // const randomY = Math.pow(Math.random(), this.parameters.spread) * (Math.random() < 0.5 ? 1 : -1);
+      // this.geometry.attributes.position.array[y] = Math.sin(branchAngle + spinAngle) * radius + randomY;
+    // }
+    // this.geometry.attributes.position.needsUpdate = true;
   }
 
   exportAsSceneObject() {
