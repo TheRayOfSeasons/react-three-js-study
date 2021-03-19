@@ -1040,10 +1040,10 @@ export class SpectrumParticle extends GameObject {
     // SphereParticles,
     // BufferedParticles,
     // GalaxyParticle,
-    GalaxyParticle2,
+    // GalaxyParticle2,
     // SiliconValley,
     // GalaxyDance,
-    // AParticle,
+    AParticle,
     // BParticle,
     ParticleEffect
   }

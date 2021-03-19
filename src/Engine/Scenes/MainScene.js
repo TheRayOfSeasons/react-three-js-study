@@ -12,6 +12,9 @@ import { MyText } from '../GameObjects/MyText';
 import { TextTracer } from '../GameObjects/TextTracer';
 import { RaycastTest } from '../GameObjects/RaycastTest';
 import { SpectrumParticle } from '../GameObjects/SpectrumParticle';
+import { LineParticle } from '../GameObjects/LineParticle';
+import { TestGLBMesh } from '../GameObjects/TestGLBMesh';
+import { SceneDirectionalLight } from '../GameObjects/SceneDirectionalLight';
 
 export class MainScene extends EngineScene {
   gameObjects = {
@@ -26,7 +29,10 @@ export class MainScene extends EngineScene {
     // TextTracer,
     // ParticleStudy,
     // RaycastTest,
-    SpectrumParticle
+    // SpectrumParticle,
+    // LineParticle,
+    TestGLBMesh,
+    SceneDirectionalLight,
   }
 
   modifyScene(scene) {
