@@ -35,7 +35,7 @@ class SphereParticles extends MonoBehaviour {
 }
 
 class BufferedParticles extends MonoBehaviour {
-  particleCount = 1000;
+  particleCount = 10000;
 
   start() {
     this.group = new Group();
@@ -45,7 +45,8 @@ class BufferedParticles extends MonoBehaviour {
 
     for(let i = 0; i < this.particleCount; i++) {
       positions[i] = (Math.random() - 0.5) * 10;
-      colors[i] = (Math.random() - 0.5) * 10;
+      // colors[i] = (Math.random() - 0.5) * 10;
+      colors[i] = 1;
     }
 
     particlesGeometry.setAttribute('position', new BufferAttribute(positions, 3));
@@ -61,25 +62,31 @@ class BufferedParticles extends MonoBehaviour {
     this.particlesGeometry = particlesGeometry;
     this.particles = particles;
     this.group.add(particles);
+    this.move = false;
+    window.addEventListener('mousemove', event => {
+      this.move = true;
+    });
   }
 
   update(time) {
     const elapsedTime = clock.getElapsedTime();
-    this.particles.rotation.y = elapsedTime * 1;
-    this.particles.rotation.z = elapsedTime * 0.02;
-    for(let i = 0; i < this.particleCount; i++) {
-      let i3 = i * 3;
-      let x = i3;
-      let y = i3 + 1;
-      let z = i3 + 2;
-      const xValue = this.particlesGeometry.attributes.position.array[x];
-      const yValue = this.particlesGeometry.attributes.position.array[y];
-      const zValue = this.particlesGeometry.attributes.position.array[z];
-      // this.particlesGeometry.attributes.position.array[x] = Math.tan(elapsedTime);
-      this.particlesGeometry.attributes.position.array[y] = Math.sin(elapsedTime + xValue);
-      // this.particlesGeometry.attributes.position.array[z] = Math.tan(elapsedTime + xValue);
+    // this.particles.rotation.y = elapsedTime * 1;
+    // this.particles.rotation.z = elapsedTime * 0.02;
+    if(this.move) {
+      for(let i = 0; i < this.particleCount; i++) {
+        let i3 = i * 3;
+        let x = i3;
+        let y = i3 + 1;
+        let z = i3 + 2;
+        const xValue = this.particlesGeometry.attributes.position.array[x];
+        const yValue = this.particlesGeometry.attributes.position.array[y];
+        const zValue = this.particlesGeometry.attributes.position.array[z];
+        // this.particlesGeometry.attributes.position.array[x] = Math.tan(elapsedTime);
+        this.particlesGeometry.attributes.position.array[y] = Math.sin(elapsedTime + xValue);
+        // this.particlesGeometry.attributes.position.array[z] = Math.tan(elapsedTime + xValue);
+      }
+      this.particlesGeometry.attributes.position.needsUpdate = true;
     }
-    this.particlesGeometry.attributes.position.needsUpdate = true;
   }
 
   exportAsSceneObject() {
@@ -1038,12 +1045,12 @@ class ParticleEffect extends MonoBehaviour {
 export class SpectrumParticle extends GameObject {
   monobehaviours = {
     // SphereParticles,
-    // BufferedParticles,
+    BufferedParticles,
     // GalaxyParticle,
     // GalaxyParticle2,
     // SiliconValley,
     // GalaxyDance,
-    AParticle,
+    // AParticle,
     // BParticle,
     ParticleEffect
   }

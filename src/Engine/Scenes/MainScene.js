@@ -15,6 +15,7 @@ import { SpectrumParticle } from '../GameObjects/SpectrumParticle';
 import { LineParticle } from '../GameObjects/LineParticle';
 import { TestGLBMesh } from '../GameObjects/TestGLBMesh';
 import { SceneDirectionalLight } from '../GameObjects/SceneDirectionalLight';
+import { Spectrum } from '../GameObjects/Spectrum';
 
 export class MainScene extends EngineScene {
   gameObjects = {
@@ -31,8 +32,9 @@ export class MainScene extends EngineScene {
     // RaycastTest,
     // SpectrumParticle,
     // LineParticle,
-    TestGLBMesh,
-    SceneDirectionalLight,
+    // TestGLBMesh,
+    // SceneDirectionalLight,
+    Spectrum
   }
 
   modifyScene(scene) {
