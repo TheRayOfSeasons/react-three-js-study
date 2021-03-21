@@ -35,7 +35,7 @@ class Particle extends MonoBehaviour {
 
     const positions = new Float32Array(this.parameters.count * 3);
     const colors = new Float32Array(this.parameters.count * 3);
-    for(let i = 0, i3 = 0, columnPosition = -(this.parameters.particlesPerColumn / 2); i < this.parameters.count; i++, i3 += 3) {
+    for(let i = 0, i3 = 0, columnPosition = -(this.parameters.particlesPerColumn / 2), alt = true; i < this.parameters.count; i++, i3 += 3) {
       const x = i3;
       const y = i3 + 1;
       const z = i3 + 2;
@@ -43,12 +43,15 @@ class Particle extends MonoBehaviour {
       let currentColumn = columnPosition;
       if(i % this.parameters.particlesPerRow == 0) {
         currentColumn = columnPosition++;
+        alt = !alt;
       }
       positions[x] = rowPosition * this.parameters.rowGap;
       positions[y] = 0;
       positions[z] = currentColumn * this.parameters.columnGap;
 
-      const geometry = i % 2 == 0 ? geometries.box : geometries.sphere;
+      console.log(currentColumn);
+      const shapes = alt ? [geometries.box, geometries.sphere] : [geometries.sphere, geometries.box];
+      const geometry = i % 2 == 0 ? shapes[0] : shapes[1];
 
       const particle = new Object3D();
       const materialCore = new MeshNormalMaterial({
