@@ -1,4 +1,5 @@
 import peepoHappy from '../Textures/stars-png-634.png';
+import gsap from 'gsap';
 import { AdditiveBlending, BoxGeometry, BufferAttribute, BufferGeometry, CircleGeometry, Clock, FlatShading, Group, InstancedBufferAttribute, InstancedBufferGeometry, Mesh, MeshLambertMaterial, MeshNormalMaterial, Object3D, Points, PointsMaterial, RawShaderMaterial, ShaderMaterial, TextureLoader, SphereGeometry } from 'three';
 import { MonoBehaviour, GameObject } from '../Core/Behaviour';
 
@@ -68,11 +69,11 @@ class Particle extends MonoBehaviour {
     this.currentIndex = 0;
     this.animationOrder = ['wave', 'morphToTarget', 'morphToTarget'];
     this.geometryDefinitions = ['wave', 'particleBox', 'wave'];
-    // setInterval(() => {
-    //   this.updateIndex();
-    //   this.targetPosition = this.positionCollection[this.geometryDefinitions[this.currentIndex]]().positions;
-    //   this.currentAnimation = this.animationOrder[this.currentIndex];
-    // }, 3000);
+    setInterval(() => {
+      this.updateIndex();
+      this.targetPosition = this.positionCollection[this.geometryDefinitions[this.currentIndex]]().positions;
+      this.currentAnimation = this.animationOrder[this.currentIndex];
+    }, 3000);
   }
 
   updateIndex() {
@@ -137,14 +138,18 @@ class Particle extends MonoBehaviour {
         const elapsedTime = clock.getElapsedTime();
         const xValue = this.particlesGeometry.attributes.position.array[x];
         this.particlesGeometry.attributes.position.array[y] = Math.sin(elapsedTime + xValue * this.parameters.waveIntensity);
+        this.particles[index].position.x = this.particlesGeometry.attributes.position.array[x];
+        this.particles[index].position.y = this.particlesGeometry.attributes.position.array[y];
+        this.particles[index].position.z = this.particlesGeometry.attributes.position.array[z];
+        this.particles[index].position.needsUpdate = true;
       },
       morphToTarget: (index, x, y, z) => {
-        const xChange = this.particlesGeometry.attributes.position.array[x] < this.targetPosition[x] ? 0.1 :  -0.1;
-        const yChange = this.particlesGeometry.attributes.position.array[y] < this.targetPosition[y] ? 0.1 :  -0.1;
-        const zChange = this.particlesGeometry.attributes.position.array[z] < this.targetPosition[z] ? 0.1 :  -0.1;
-        this.particlesGeometry.attributes.position.array[x] += xChange;
-        this.particlesGeometry.attributes.position.array[y] += yChange;
-        this.particlesGeometry.attributes.position.array[z] += zChange;
+        gsap.to(this.particles[index].position, {
+          duration: 2,
+          x: this.targetPosition[x],
+          y: this.targetPosition[y],
+          z: this.targetPosition[z]
+        });
       }
     }
   }
@@ -156,10 +161,6 @@ class Particle extends MonoBehaviour {
       let y = i3 + 1;
       let z = i3 + 2;
       this.animations[this.currentAnimation](i, x, y, z);
-
-      this.particles[i].position.x = this.particlesGeometry.attributes.position.array[x];
-      this.particles[i].position.y = this.particlesGeometry.attributes.position.array[y];
-      this.particles[i].position.z = this.particlesGeometry.attributes.position.array[z];
       this.particles[i].position.needsUpdate = true;
     }
     this.particlesGeometry.attributes.position.needsUpdate = true;
