@@ -9,12 +9,12 @@ const colors = [0xf7a541, 0xf45d4c, 0xfa2e59, 0x4783c3, 0x9c6cb7];
 class Particle extends MonoBehaviour {
   parameters = {
     count: 1000,
-    particlesPerRow: 25,
-    particlesPerColumn: 25,
-    particlesPerHeight: 25,
-    columnGap: 0.1,
-    rowGap: 0.1,
-    heightGap: 0.1, 
+    particlesPerRow: 10,
+    particlesPerColumn: 10,
+    particlesPerHeight: 10,
+    columnGap: 0.2,
+    rowGap: 0.2,
+    heightGap: 0.2, 
     waveIntensity: 2
   };
   particles = [];
@@ -73,7 +73,7 @@ class Particle extends MonoBehaviour {
       this.updateIndex();
       this.targetPosition = this.positionCollection[this.geometryDefinitions[this.currentIndex]]().positions;
       this.currentAnimation = this.animationOrder[this.currentIndex];
-    }, 3000);
+    }, 5000);
   }
 
   updateIndex() {
@@ -102,8 +102,9 @@ class Particle extends MonoBehaviour {
             currentColumn = ++columnPosition;
             alt = !alt;
           }
-          positions[x] = rowPosition * this.parameters.rowGap;
-          positions[y] = 0;
+          const xValue = rowPosition * this.parameters.rowGap;
+          positions[x] = xValue;
+          positions[y] = Math.sin(xValue * this.parameters.waveIntensity);
           positions[z] = currentColumn * this.parameters.columnGap;
         }
         return { positions, colors };
@@ -111,21 +112,19 @@ class Particle extends MonoBehaviour {
       particleBox: () => {
         const positions = new Float32Array(this.parameters.count * 3);
         const colors = new Float32Array(this.parameters.count * 3);
-        const prePositions = [];
-        for(let x = 0; x < this.parameters.particlesPerColumn; x++) {
-          for(let y = 0; y < this.parameters.particlesPerRow; y++) {
-            for(let z = 0; z < this.parameters.particlesPerHeight; z++) {
-              prePositions.push(
-                x,
-                y,
-                z
-              );
+        let i3 = 0;
+        for(let xPos = 0; xPos < this.parameters.particlesPerRow; xPos++) {
+          for(let yPos = 0; yPos < this.parameters.particlesPerRow; yPos++) {
+            for(let zPos = 0; zPos < this.parameters.particlesPerRow; zPos++) {
+              const x = i3;
+              const y = i3 + 1;
+              const z = i3 + 2;
+              positions[x] = (xPos - (xPos / 2)) * this.parameters.rowGap;
+              positions[y] = (yPos - (yPos / 2)) * this.parameters.columnGap;
+              positions[z] = (zPos - (zPos / 2)) * this.parameters.heightGap;
+              i3 += 3;
             }
           }
-        }
-        for(let i = 0; i < prePositions.length; i++) {
-          positions[i] = prePositions[i];
-          colors[i] = 1;
         }
         return { positions, colors };
       }
