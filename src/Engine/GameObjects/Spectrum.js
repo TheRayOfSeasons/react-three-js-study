@@ -1,5 +1,5 @@
 import peepoHappy from '../Textures/stars-png-634.png';
-import { AdditiveBlending, BoxGeometry, BufferAttribute, BufferGeometry, CircleGeometry, Clock, FlatShading, Group, InstancedBufferAttribute, InstancedBufferGeometry, Mesh, MeshLambertMaterial, MeshNormalMaterial, Object3D, Points, PointsMaterial, RawShaderMaterial, ShaderMaterial, TextureLoader } from 'three';
+import { AdditiveBlending, BoxGeometry, BufferAttribute, BufferGeometry, CircleGeometry, Clock, FlatShading, Group, InstancedBufferAttribute, InstancedBufferGeometry, Mesh, MeshLambertMaterial, MeshNormalMaterial, Object3D, Points, PointsMaterial, RawShaderMaterial, ShaderMaterial, TextureLoader, SphereGeometry } from 'three';
 import { MonoBehaviour, GameObject } from '../Core/Behaviour';
 
 const clock = new Clock();
@@ -7,14 +7,18 @@ const colors = [0xf7a541, 0xf45d4c, 0xfa2e59, 0x4783c3, 0x9c6cb7];
 
 class Particle extends MonoBehaviour {
   parameters = {
-    count: 1000,
-    waveIntensity: 2
+    count: 500,
+    waveIntensity: 4
   };
   particles = [];
 
   start() {
     this.group = new Group();
     const geometryCore = new BoxGeometry(0.035, 0.035, 0.035);
+    const geometries = {
+      box: new BoxGeometry(0.035, 0.035, 0.035),
+      sphere: new SphereGeometry(0.0175, 8, 8),
+    };
     const particlesGeometry = new BufferGeometry();
     const particlesMaterial = new PointsMaterial({
       size: 0.02,
@@ -31,16 +35,18 @@ class Particle extends MonoBehaviour {
       const x = i3;
       const y = i3 + 1;
       const z = i3 + 2;
-      positions[x] = (Math.random() - 0.5) * 2;
-      positions[y] = (Math.random() - 0.5) * 2;
-      positions[z] = (Math.random() - 0.5) * 2;
+      positions[x] = (Math.random() - 0.5) * 1;
+      positions[y] = 0;
+      positions[z] = (Math.random() - 0.5) * 1;
+
+      const geometry = i % 2 == 0 ? geometries.box : geometries.sphere;
 
       const particle = new Object3D();
       const materialCore = new MeshNormalMaterial({
         color: colors[i % colors.length],
         // shading: FlatShading,
       });
-      const box = new Mesh(geometryCore, materialCore);
+      const box = new Mesh(geometry, materialCore);
       box.geometry.__dirtyVertices = true;
       box.geometry.dynamic = true;
       box.position.set(positions[x], positions[y], positions[z]);
