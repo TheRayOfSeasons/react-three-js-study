@@ -12,7 +12,7 @@ class Particle extends MonoBehaviour {
     particlesPerColumn: 25,
     columnGap: 0.1,
     rowGap: 0.1,
-    waveIntensity: 4
+    waveIntensity: 2
   };
   particles = [];
 
@@ -42,14 +42,13 @@ class Particle extends MonoBehaviour {
       const rowPosition = (i % this.parameters.particlesPerRow) - (this.parameters.particlesPerRow / 2);
       let currentColumn = columnPosition;
       if(i % this.parameters.particlesPerRow == 0) {
-        currentColumn = columnPosition++;
+        currentColumn = ++columnPosition;
         alt = !alt;
       }
       positions[x] = rowPosition * this.parameters.rowGap;
       positions[y] = 0;
       positions[z] = currentColumn * this.parameters.columnGap;
 
-      console.log(currentColumn);
       const shapes = alt ? [geometries.box, geometries.sphere] : [geometries.sphere, geometries.box];
       const geometry = i % 2 == 0 ? shapes[0] : shapes[1];
 
@@ -59,9 +58,6 @@ class Particle extends MonoBehaviour {
         // shading: FlatShading,
       });
       const box = new Mesh(geometry, materialCore);
-      box.geometry.__dirtyVertices = true;
-      box.geometry.dynamic = true;
-      box.position.set(positions[x], positions[y], positions[z]);
 
       particle.add(box);
       this.particles.push(particle);
@@ -73,17 +69,27 @@ class Particle extends MonoBehaviour {
     const particles = new Points(particlesGeometry, particlesMaterial);
     this.group.add(particles);
     this.particlesGeometry = particlesGeometry;
+    this.animations = this.getAnimations();
+    this.currentAnimation = 'wave';
+  }
+
+  getAnimations() {
+    return {
+      wave: (index, x, y, z) => {
+        const elapsedTime = clock.getElapsedTime();
+        const xValue = this.particlesGeometry.attributes.position.array[x];
+        this.particlesGeometry.attributes.position.array[y] = Math.sin(elapsedTime + xValue * this.parameters.waveIntensity);
+      }
+    }
   }
 
   update(time) {
-    const elapsedTime = clock.getElapsedTime();
     for(let i = 0; i < this.parameters.count; i++) {
       let i3 = i * 3;
       let x = i3;
       let y = i3 + 1;
       let z = i3 + 2;
-      const xValue = this.particlesGeometry.attributes.position.array[x];
-      this.particlesGeometry.attributes.position.array[y] = Math.sin(elapsedTime + xValue * this.parameters.waveIntensity);
+      this.animations[this.currentAnimation](i, x, y, z);
 
       this.particles[i].position.x = this.particlesGeometry.attributes.position.array[x];
       this.particles[i].position.y = this.particlesGeometry.attributes.position.array[y];
