@@ -7,11 +7,13 @@ const colors = [0xf7a541, 0xf45d4c, 0xfa2e59, 0x4783c3, 0x9c6cb7];
 
 class Particle extends MonoBehaviour {
   parameters = {
-    count: 500,
-    particlesPerRow: 20,
+    count: 1000,
+    particlesPerRow: 25,
     particlesPerColumn: 25,
+    particlesPerHeight: 25,
     columnGap: 0.1,
     rowGap: 0.1,
+    heightGap: 0.1, 
     waveIntensity: 2
   };
   particles = [];
@@ -33,25 +35,16 @@ class Particle extends MonoBehaviour {
       // transparent: true,
     });
 
-    const positions = new Float32Array(this.parameters.count * 3);
-    const colors = new Float32Array(this.parameters.count * 3);
-    for(let i = 0, i3 = 0, columnPosition = -(this.parameters.particlesPerColumn / 2), alt = true; i < this.parameters.count; i++, i3 += 3) {
-      const x = i3;
-      const y = i3 + 1;
-      const z = i3 + 2;
-      const rowPosition = (i % this.parameters.particlesPerRow) - (this.parameters.particlesPerRow / 2);
-      let currentColumn = columnPosition;
-      if(i % this.parameters.particlesPerRow == 0) {
-        currentColumn = ++columnPosition;
+    this.positionCollection = this.getPositions();
+    const defaultPos = 'wave';
+    const { positions, colors } = this.positionCollection[defaultPos]();
+    const rowHeightParticles = this.parameters.particlesPerRow + this.parameters.particlesPerHeight;
+    for(let i = 0, alt = true; i < this.parameters.count; i++) {
+      if(i % rowHeightParticles == 0) {
         alt = !alt;
       }
-      positions[x] = rowPosition * this.parameters.rowGap;
-      positions[y] = 0;
-      positions[z] = currentColumn * this.parameters.columnGap;
-
       const shapes = alt ? [geometries.box, geometries.sphere] : [geometries.sphere, geometries.box];
       const geometry = i % 2 == 0 ? shapes[0] : shapes[1];
-
       const particle = new Object3D();
       const materialCore = new MeshNormalMaterial({
         color: colors[i % colors.length],
@@ -70,7 +63,72 @@ class Particle extends MonoBehaviour {
     this.group.add(particles);
     this.particlesGeometry = particlesGeometry;
     this.animations = this.getAnimations();
+    this.targetPosition = positions;
     this.currentAnimation = 'wave';
+    this.currentIndex = 0;
+    this.animationOrder = ['wave', 'morphToTarget', 'morphToTarget'];
+    this.geometryDefinitions = ['wave', 'particleBox', 'wave'];
+    // setInterval(() => {
+    //   this.updateIndex();
+    //   this.targetPosition = this.positionCollection[this.geometryDefinitions[this.currentIndex]]().positions;
+    //   this.currentAnimation = this.animationOrder[this.currentIndex];
+    // }, 3000);
+  }
+
+  updateIndex() {
+    if(this.currentIndex < Object.keys(this.animationOrder).length - 1) {
+      this.currentIndex++;
+    }
+    else {
+      this.currentIndex = 0;
+    }
+  }
+
+  getPositions() {
+    return {
+      wave: () => {
+        const positions = new Float32Array(this.parameters.count * 3);
+        const colors = new Float32Array(this.parameters.count * 3);
+        // Combined so we have more elements to build the box.
+        const rowHeightParticles = this.parameters.particlesPerRow + this.parameters.particlesPerHeight;
+        for(let i = 0, i3 = 0, columnPosition = -(this.parameters.particlesPerColumn / 2), alt = true; i < this.parameters.count; i++, i3 += 3) {
+          const x = i3;
+          const y = i3 + 1;
+          const z = i3 + 2;
+          const rowPosition = (i % (rowHeightParticles)) - (rowHeightParticles / 2);
+          let currentColumn = columnPosition;
+          if(i % rowHeightParticles == 0) {
+            currentColumn = ++columnPosition;
+            alt = !alt;
+          }
+          positions[x] = rowPosition * this.parameters.rowGap;
+          positions[y] = 0;
+          positions[z] = currentColumn * this.parameters.columnGap;
+        }
+        return { positions, colors };
+      },
+      particleBox: () => {
+        const positions = new Float32Array(this.parameters.count * 3);
+        const colors = new Float32Array(this.parameters.count * 3);
+        const prePositions = [];
+        for(let x = 0; x < this.parameters.particlesPerColumn; x++) {
+          for(let y = 0; y < this.parameters.particlesPerRow; y++) {
+            for(let z = 0; z < this.parameters.particlesPerHeight; z++) {
+              prePositions.push(
+                x,
+                y,
+                z
+              );
+            }
+          }
+        }
+        for(let i = 0; i < prePositions.length; i++) {
+          positions[i] = prePositions[i];
+          colors[i] = 1;
+        }
+        return { positions, colors };
+      }
+    }
   }
 
   getAnimations() {
@@ -79,6 +137,14 @@ class Particle extends MonoBehaviour {
         const elapsedTime = clock.getElapsedTime();
         const xValue = this.particlesGeometry.attributes.position.array[x];
         this.particlesGeometry.attributes.position.array[y] = Math.sin(elapsedTime + xValue * this.parameters.waveIntensity);
+      },
+      morphToTarget: (index, x, y, z) => {
+        const xChange = this.particlesGeometry.attributes.position.array[x] < this.targetPosition[x] ? 0.1 :  -0.1;
+        const yChange = this.particlesGeometry.attributes.position.array[y] < this.targetPosition[y] ? 0.1 :  -0.1;
+        const zChange = this.particlesGeometry.attributes.position.array[z] < this.targetPosition[z] ? 0.1 :  -0.1;
+        this.particlesGeometry.attributes.position.array[x] += xChange;
+        this.particlesGeometry.attributes.position.array[y] += yChange;
+        this.particlesGeometry.attributes.position.array[z] += zChange;
       }
     }
   }
