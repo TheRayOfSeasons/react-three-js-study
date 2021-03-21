@@ -7,8 +7,8 @@ const colors = [0xf7a541, 0xf45d4c, 0xfa2e59, 0x4783c3, 0x9c6cb7];
 
 class Particle extends MonoBehaviour {
   parameters = {
-    count: 1000,
-    particlesPerRow: 40,
+    count: 500,
+    particlesPerRow: 20,
     particlesPerColumn: 25,
     columnGap: 0.1,
     rowGap: 0.1,
@@ -30,20 +30,23 @@ class Particle extends MonoBehaviour {
       depthWrite: false,
       blending: AdditiveBlending,
       vertexColors: true,
-      transparent: true,
+      // transparent: true,
     });
 
     const positions = new Float32Array(this.parameters.count * 3);
     const colors = new Float32Array(this.parameters.count * 3);
-    for(let i = 0, i3 = 0; i < this.parameters.count; i++, i3 += 3) {
+    for(let i = 0, i3 = 0, columnPosition = -(this.parameters.particlesPerColumn / 2); i < this.parameters.count; i++, i3 += 3) {
       const x = i3;
       const y = i3 + 1;
       const z = i3 + 2;
       const rowPosition = (i % this.parameters.particlesPerRow) - (this.parameters.particlesPerRow / 2);
-      const columnPosition = (i % this.parameters.particlesPerColumn) - (this.parameters.particlesPerColumn / 2);
+      let currentColumn = columnPosition;
+      if(i % this.parameters.particlesPerRow == 0) {
+        currentColumn = columnPosition++;
+      }
       positions[x] = rowPosition * this.parameters.rowGap;
       positions[y] = 0;
-      positions[z] = columnPosition * this.parameters.columnGap;
+      positions[z] = currentColumn * this.parameters.columnGap;
 
       const geometry = i % 2 == 0 ? geometries.box : geometries.sphere;
 
