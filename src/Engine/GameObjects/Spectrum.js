@@ -7,7 +7,11 @@ const colors = [0xf7a541, 0xf45d4c, 0xfa2e59, 0x4783c3, 0x9c6cb7];
 
 class Particle extends MonoBehaviour {
   parameters = {
-    count: 500,
+    count: 1000,
+    particlesPerRow: 40,
+    particlesPerColumn: 25,
+    columnGap: 0.1,
+    rowGap: 0.1,
     waveIntensity: 4
   };
   particles = [];
@@ -35,9 +39,11 @@ class Particle extends MonoBehaviour {
       const x = i3;
       const y = i3 + 1;
       const z = i3 + 2;
-      positions[x] = (Math.random() - 0.5) * 1;
+      const rowPosition = (i % this.parameters.particlesPerRow) - (this.parameters.particlesPerRow / 2);
+      const columnPosition = (i % this.parameters.particlesPerColumn) - (this.parameters.particlesPerColumn / 2);
+      positions[x] = rowPosition * this.parameters.rowGap;
       positions[y] = 0;
-      positions[z] = (Math.random() - 0.5) * 1;
+      positions[z] = columnPosition * this.parameters.columnGap;
 
       const geometry = i % 2 == 0 ? geometries.box : geometries.sphere;
 
