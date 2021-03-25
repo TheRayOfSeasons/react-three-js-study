@@ -1,4 +1,5 @@
 import { Fog } from 'three';
+import { MainCamera } from '../Cameras/MainCamera';
 import { EngineScene } from '../Core/SceneManagement';
 import { BoxObject } from '../GameObjects/BoxObject';
 import { ControllableBox } from '../GameObjects/ControllableBox';
@@ -17,6 +18,7 @@ import { TestGLBMesh } from '../GameObjects/TestGLBMesh';
 import { SceneDirectionalLight } from '../GameObjects/SceneDirectionalLight';
 import { Spectrum } from '../GameObjects/Spectrum';
 import { MovingBox } from '../GameObjects/MovingBox';
+import { ShaderStudy } from '../GameObjects/ShaderStudy';
 
 export class MainScene extends EngineScene {
   gameObjects = {
@@ -35,9 +37,14 @@ export class MainScene extends EngineScene {
     // LineParticle,
     // TestGLBMesh,
     // SceneDirectionalLight,
-    Spectrum,
+    // Spectrum,
     // MovingBox,
+    ShaderStudy,
   }
+  cameras = {
+    MainCamera
+  }
+  defaultCamera = 'MainCamera';
 
   modifyScene(scene) {
     const fog = new Fog('black', 1, 1000);

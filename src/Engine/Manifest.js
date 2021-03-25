@@ -3,23 +3,37 @@ import { Size } from './Constants.js';
 import { MainCamera } from './Cameras/MainCamera';
 import { MainScene } from './Scenes/MainScene';
 
-export let currentCanvas;
-export let currentScene = new MainScene;
+const scenes = {
+  MainScene,
+}
 
-export const manifest = {
-  init: canvas => {
-    currentCanvas = canvas;
-    const renderer = new WebGLRenderer({
+const activeRenders = {};
+
+class ActiveRender {
+  constructor({canvas, sceneName, height, width, options}) {
+    if(typeof(options) === 'object') {
+      if(options.canvas) {
+        canvas = options.canvas;
+      }
+    }
+    this.renderer = new WebGLRenderer(options || {
       antialias: true,
+      alpha: true,
       canvas
     });
-    renderer.setSize(Size.GameScreen.width, Size.GameScreen.height);
-    const scene = currentScene;
-    scene.start();
+    this.renderer.setSize(width || Size.GameScreen.width, height || Size.GameScreen.height);
+    this.scene = new scenes[sceneName](canvas);
+    this.scene.start();
     const animate = (time) => {
-      scene.update(time);
-      renderer.render(scene.scene, MainCamera);
+      this.scene.update(time);
+      this.renderer.render(this.scene.scene, this.scene.currentCamera);
     }
-    renderer.setAnimationLoop(animate);
+    this.renderer.setAnimationLoop(animate);
   }
+}
+
+export const manifest = {
+  init: (name, args) => {
+    activeRenders[name] = new ActiveRender(args);
+  },
 }

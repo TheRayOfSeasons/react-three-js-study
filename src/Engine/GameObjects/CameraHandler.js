@@ -3,7 +3,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { MonoBehaviour, GameObject } from '../Core/Behaviour';
 import { Size } from '../Constants.js';
 import { MainCamera } from '../Cameras/MainCamera';
-import { currentCanvas } from '../Manifest';
 
 class CameraLogic extends MonoBehaviour {
   start() {
@@ -13,7 +12,7 @@ class CameraLogic extends MonoBehaviour {
     //   this.cursor.x = event.clientX / Size.GameScreen.width - 0.5;
     //   this.cursor.y = -(event.clientY / Size.GameScreen.height - 0.5);
     // });
-    this.controls = new OrbitControls(MainCamera, currentCanvas);
+    this.controls = new OrbitControls(MainCamera, this.scene.canvas);
     this.controls.enableDamping = true;
   }
 

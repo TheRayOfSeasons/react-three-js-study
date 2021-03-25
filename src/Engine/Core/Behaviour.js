@@ -13,13 +13,14 @@ export class GameObject extends Behaviour {
   monobehaviours = {}
   components = {}
 
-  constructor() {
+  constructor({ scene }) {
     super();
+    this.scene = scene;
     this.group = new Group();
   }
 
   addComponent({ key, monobehaviour }) {
-    const component = new monobehaviour({ parentBehaviour: this });
+    const component = new monobehaviour({ parentBehaviour: this, scene: this.scene });
     this.components[key] = component;
     component.start();
     const exportedSceneObject = component.exportAsSceneObject();
@@ -45,8 +46,9 @@ export class GameObject extends Behaviour {
 }
 
 export class MonoBehaviour extends Component {
-  constructor({ parentBehaviour }) {
+  constructor({ parentBehaviour, scene }) {
     super();
+    this.scene = scene;
     this.parentBehaviour = parentBehaviour;
   }
 

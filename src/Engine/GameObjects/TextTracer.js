@@ -2,7 +2,6 @@ import gsap from 'gsap';
 import { FontLoader, Group, TextGeometry, Vector2, Vector3, DoubleSide, Mesh, MeshNormalMaterial, Raycaster, Clock, PlaneGeometry, MeshBasicMaterial, SphereGeometry } from 'three';
 import { MainCamera } from '../Cameras/MainCamera';
 import { MonoBehaviour, GameObject } from '../Core/Behaviour';
-import { currentScene } from '../Manifest';
 
 
 const clock = new Clock();
@@ -88,7 +87,7 @@ class TextHoverEffect extends MonoBehaviour {
 
   update(time) {
     this.objects = this.getComponent('TextMeshGroup').raycastGroup.children;
-    if(currentScene) {
+    if(this.scene) {
       this.raycaster = new Raycaster();
       this.raycaster.setFromCamera(this.mousePosition, MainCamera);
 

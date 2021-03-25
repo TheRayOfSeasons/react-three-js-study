@@ -6,7 +6,13 @@ export const Game = () => {
   const gameScreen = useRef(null);
 
   useEffect(() => {
-    manifest.init(gameScreen.current);
+    manifest.init('game', {
+      options: {
+        antialias: true,
+        canvas: gameScreen.current,
+      },
+      sceneName: 'MainScene',
+    });
   }, []);
 
   return (

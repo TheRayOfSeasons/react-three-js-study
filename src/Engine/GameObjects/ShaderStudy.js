@@ -92,6 +92,7 @@ class WaveShaderHandler extends MonoBehaviour {
         uSurfaceColor: { value: new Color('#9bd8ff') },
         uColorOffset: { value: 0.05 },
         uColorMultiplier: { value: 5 },
+
       },
       vertexShader: `
         uniform mat4 projectionMatrix;
@@ -201,15 +202,16 @@ class WaveShaderHandler extends MonoBehaviour {
           float elevation = elevationX * elevationZ * uBigWavesElevation;
 
           // ocean
-          // elevation -= abs(cnoise(vec3(modelPosition.xz * 3.0, uTime * 0.2)) * 0.15 / i);
+          // elevation -= abs(cnoise(vec3(modelPosition.xz * 3.0, uTime * 0.2)) * 0.15);
 
-          for(float i = 1.0; i < 3.0; i++)
-          {
-            elevation -= abs(cnoise(vec3(modelPosition.xz * 3.0 * i, uTime * 0.2)) * 0.15);
-          }
+          // raging ocean
+          // for(float i = 1.0; i < 3.0; i++)
+          // {
+          //   elevation -= abs(cnoise(vec3(modelPosition.xz * 3.0 * i, uTime * 0.2)) * 0.15);
+          // }
 
           // hills
-          // elevation += abs(cnoise(vec3(modelPosition.xz * 3.0, uTime * 0.2)) * 0.15);
+          elevation += abs(cnoise(vec3(modelPosition.xz * 3.0, uTime * 0.2)) * 0.15);
 
           // smooth hills
           // elevation += cnoise(vec3(modelPosition.xz * 3.0, uTime * 0.2)) * 0.15;
@@ -242,9 +244,8 @@ class WaveShaderHandler extends MonoBehaviour {
         }
       `,
       side: DoubleSide,
-      blending: AdditiveBlending,
+      // blending: AdditiveBlending,
       size: 0.2
-      // wireframe: true,
     });
     this.mesh = new Mesh(this.geometry, this.shaderMaterial);
     this.mesh.rotation.x = - Math.PI * 0.5;
