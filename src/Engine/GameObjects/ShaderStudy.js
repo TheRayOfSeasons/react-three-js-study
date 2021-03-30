@@ -75,7 +75,7 @@ class BasicShaderHandler extends MonoBehaviour {
 class WaveShaderHandler extends MonoBehaviour {
   start() {
     this.group = new Group();
-    this.geometry = new PlaneBufferGeometry(5, 5, 512, 512);
+    this.geometry = new PlaneBufferGeometry(5, 5, 256, 256);
     const vertexCount = this.geometry.attributes.position.count;
     const randoms = new Float32Array(vertexCount);
     for(let i = 0; i < vertexCount; i++) {
@@ -84,15 +84,14 @@ class WaveShaderHandler extends MonoBehaviour {
     this.shaderMaterial = new RawShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
-        uFrequency: { value: new Vector2(10, 5) },
-        uBigWavesElevation: { value: 0.2 },
-        uBigWavesFrequency: { value: new Vector2(4, 1.5) },
-        uBigWavesSpeed: { value: 0.75 },
+        uFrequency: { value: new Vector2(0.002, 0.001) },
+        uBigWavesElevation: { value: 0.1 },
+        uBigWavesFrequency: { value: new Vector2(0.2, 0.05) },
+        uBigWavesSpeed: { value: 0.1 },
         uDepthColor: { value: new Color('#186691') },
         uSurfaceColor: { value: new Color('#9bd8ff') },
         uColorOffset: { value: 0.05 },
         uColorMultiplier: { value: 5 },
-
       },
       vertexShader: `
         uniform mat4 projectionMatrix;
@@ -107,6 +106,9 @@ class WaveShaderHandler extends MonoBehaviour {
         attribute vec3 position;
 
         varying float vElevation;
+        const float minPointScale = 0.1;
+        const float maxPointScale = 0.7;
+        const float maxDistance   = 100.0;
 
         // Classic Perlin 3D Noise
         // by Stefan Gustavson
@@ -197,8 +199,9 @@ class WaveShaderHandler extends MonoBehaviour {
         {
           vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-          float elevationX = sin(modelPosition.x * uBigWavesFrequency.x + uTime * uBigWavesSpeed);
-          float elevationZ = sin(modelPosition.z * uBigWavesFrequency.y + uTime * uBigWavesSpeed);
+          float distanceFromMidpoint = (distance(vec3(0.0, 0.0, 2.5), vec3(0.0, 0.0, modelPosition.z)) + 0.1) * 0.25;
+          float elevationX = sin(modelPosition.x * (uBigWavesFrequency.x * distanceFromMidpoint) + uTime * (uBigWavesSpeed * distanceFromMidpoint));
+          float elevationZ = sin(modelPosition.z * (uBigWavesFrequency.y * distanceFromMidpoint) + uTime * (uBigWavesSpeed * distanceFromMidpoint));
           float elevation = elevationX * elevationZ * uBigWavesElevation;
 
           // ocean
@@ -211,7 +214,7 @@ class WaveShaderHandler extends MonoBehaviour {
           // }
 
           // hills
-          elevation += abs(cnoise(vec3(modelPosition.xz * 3.0, uTime * 0.2)) * 0.15);
+          elevation += abs(cnoise(vec3(modelPosition.xz * (2.0 * distanceFromMidpoint), (uTime * 0.5))) * (0.05 * distanceFromMidpoint));
 
           // smooth hills
           // elevation += cnoise(vec3(modelPosition.xz * 3.0, uTime * 0.2)) * 0.15;
@@ -220,6 +223,7 @@ class WaveShaderHandler extends MonoBehaviour {
 
           vec4 viewPosition = viewMatrix * modelPosition;
           vec4 projectedPosition = projectionMatrix * viewPosition;
+          gl_PointSize = ( 3.0 / - viewPosition.z );
 
           gl_Position = projectedPosition;
 
@@ -245,9 +249,8 @@ class WaveShaderHandler extends MonoBehaviour {
       `,
       side: DoubleSide,
       // blending: AdditiveBlending,
-      size: 0.2
     });
-    this.mesh = new Mesh(this.geometry, this.shaderMaterial);
+    this.mesh = new Points(this.geometry, this.shaderMaterial);
     this.mesh.rotation.x = - Math.PI * 0.5;
     this.group.add(this.mesh);
   }

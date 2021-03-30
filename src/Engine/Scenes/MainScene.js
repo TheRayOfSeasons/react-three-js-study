@@ -19,6 +19,7 @@ import { SceneDirectionalLight } from '../GameObjects/SceneDirectionalLight';
 import { Spectrum } from '../GameObjects/Spectrum';
 import { MovingBox } from '../GameObjects/MovingBox';
 import { ShaderStudy } from '../GameObjects/ShaderStudy';
+import { TestOBJMesh } from '../GameObjects/TestObjMesh';
 
 export class MainScene extends EngineScene {
   gameObjects = {
@@ -35,11 +36,12 @@ export class MainScene extends EngineScene {
     // RaycastTest,
     // SpectrumParticle,
     // LineParticle,
-    // TestGLBMesh,
+    TestGLBMesh,
     // SceneDirectionalLight,
     // Spectrum,
     // MovingBox,
-    ShaderStudy,
+    // ShaderStudy,
+    // TestOBJMesh,
   }
   cameras = {
     MainCamera
